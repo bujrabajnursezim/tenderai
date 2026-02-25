@@ -128,9 +128,9 @@ with tab1:
         <div style='background:#1A1D2E; border-left:4px solid #6C63FF;
         padding:10px; border-radius:5px; margin:4px 0; display:flex; gap:10px'>
         <span style='font-size:20px'>{icon}</span>
-        <div>
+        <div style='flex:1; min-width:0'>
         <span style='color:#A0A8C0; font-size:12px'>{label}</span><br>
-        <span style='color:#FFFFFF; font-weight:bold'>{value}</span>
+        <span style='color:#FFFFFF; font-weight:bold; word-wrap:break-word; white-space:normal'>{value}</span>
         </div>
         </div>
         """, unsafe_allow_html=True)
