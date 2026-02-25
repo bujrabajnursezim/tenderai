@@ -116,6 +116,38 @@ with tab1:
             st.session_state.history = st.session_state.history[:5]
             st.markdown("---")
             show_gauge(score)
+            # ПРАВОВОЙ АНАЛИЗ
+            if result.get('legal') and result.get('legal_summary'):
+                st.markdown('---')
+                st.subheader('Правовой анализ')
+                legal = result['legal']
+                summary = result['legal_summary']
+                if summary['level'] == 'critical':
+                    st.error(f"КРИТИЧНО: {summary['text']}")
+                elif summary['level'] == 'warning':
+                    st.warning(f"ВНИМАНИЕ: {summary['text']}")
+                else:
+                    st.success(f"ЧИСТО: {summary['text']}")
+                for item in legal:
+                    if item['status'] == 'violation':
+                        st.markdown(f"""
+            <div style='background:#2D1B1B; border-left:4px solid #FF4B4B;
+            padding:10px; border-radius:5px; margin:5px 0'>
+            <b style='color:#FF4B4B'>⚠️ {item['article']}</b><br>
+            <span style='color:#FFFFFF'>{item['message']}</span><br>
+            <span style='color:#A0A8C0; font-size:12px'>Найдено: {item['found']}</span>
+            </div>
+            """, unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"""
+            <div style='background:#1B2D1B; border-left:4px solid #00C853;
+            padding:10px; border-radius:5px; margin:5px 0'>
+            <b style='color:#00C853'>✅ {item['article']}</b><br>
+            <span style='color:#A0A8C0'>{item['message']}</span>
+            </div>
+            """, unsafe_allow_html=True)
+                st.caption('Анализ носит информационный характер. Рекомендуем проконсультироваться с юристом.')
+
             if score >= 70:
                 st.markdown('<div style="text-align:center"><span class="badge-high">ВЫСОКИЙ РИСК</span></div>', unsafe_allow_html=True)
             elif score >= 40:
@@ -262,3 +294,4 @@ with tab3:
             st.rerun()
 
 st.markdown('<p style="text-align:center;color:#ddd;font-size:0.7rem;margin-top:3rem;">TENDERAI // HACKATHON 2026 // KAZAKHSTAN</p>', unsafe_allow_html=True)
+
