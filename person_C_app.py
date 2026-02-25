@@ -295,3 +295,4 @@ with tab3:
 
 st.markdown('<p style="text-align:center;color:#ddd;font-size:0.7rem;margin-top:3rem;">TENDERAI // HACKATHON 2026 // KAZAKHSTAN</p>', unsafe_allow_html=True)
 
+
