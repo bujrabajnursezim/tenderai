@@ -205,6 +205,45 @@ with tab1:
                     unsafe_allow_html=True,
                 )
 
+            winners = result.get("winners", {})
+            if winners.get("found"):
+                st.markdown("---")
+                st.subheader("🏆 История побед поставщика")
+
+                flag = winners.get("flag", "⚪")
+                border_color = (
+                    "#FF4B4B"
+                    if winners["risk_level"] == "high"
+                    else "#FFA500"
+                    if winners["risk_level"] == "medium"
+                    else "#00C853"
+                )
+                st.markdown(
+                    f"""
+    <div style='background:#1A1D2E; border-left:4px solid {border_color};
+    padding:12px; border-radius:5px; margin:4px 0'>
+    <b style='font-size:16px'>{flag} {winners["supplier"]}</b><br>
+    <span style='color:#FFFFFF'>{winners["message"]}</span>
+    </div>
+    """,
+                    unsafe_allow_html=True,
+                )
+
+                for w in winners["wins"]:
+                    st.markdown(
+                        f"""
+        <div style='background:#0F1117; border:1px solid #2D2D3D;
+        padding:8px 12px; border-radius:5px; margin:3px 0'>
+        <span style='color:#6C63FF; font-weight:bold'>{w["year"]}</span>
+        <span style='color:#FFFFFF; margin-left:10px'>{w["tender"]}</span>
+        <span style='color:#00C853; float:right'>{w["amount"]}</span>
+        </div>
+        """,
+                        unsafe_allow_html=True,
+                    )
+
+                st.caption(winners.get("demo_note", ""))
+
             st.markdown("---")
             st.subheader("⚖️ Правовой анализ")
 
