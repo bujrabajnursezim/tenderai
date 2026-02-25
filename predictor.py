@@ -3,6 +3,7 @@ import pickle, re, numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MinMaxScaler
 from extract_requirements import extract_requirements, REQUIREMENT_LABELS
+from winner_history import check_winner_history
 from legal_compliance import check_legal_compliance, get_legal_summary
 embedder = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 with open("model.pkl", "rb") as f: model = pickle.load(f)
@@ -22,9 +23,9 @@ def extract_features(text):
     restriction_words = ["строго","исключительно","только","авторизованный дилер","официальный представитель","аналоги не принимаются"]
     restriction_score = min(sum(1 for w in restriction_words if w.lower() in text.lower()) / 3, 1.0)
 
-    tight_deadline = bool(re.search(r"[1-3]\s*(рабочих|календарных|жұмыс|күнтізбелік)?\s*(дн|день|күн)", text, re.IGNORECASE))
+    tight_deadline = bool(re.search(r"(в течени[еи]\s*[1-3]\s*(рабоч|календар)\w+|[1-3]\s*(рабочих|календарных|жұмыс|күнтізбелік)?\s*(дн|день|күн)|за\s*1\s*день|1\s*рабочего\s*дня)", text, re.IGNORECASE))
     
-    precise_patterns = [r"\d+\.\d+\s*(ГГц|МГц|ГБ|МБ|дюйм|мм|кг)", r"версия\s+\d+\.\d+\.\d+", r"\d{4,}x\d{4,}"]
+    precise_patterns = [r"\d+[,.]?\d*\s*(ГГц|МГц|ГБ|МБ|GB|дюйм|мм|кг)", r"версия\s+\d+\.\d+", r"\d{3,}[xX×]\d{3,}", r"артикул\s+[\w\-]{4,}", r"[A-Z]{2,}\d{4,}[\w\-]*"]
     precise_score = min(sum(len(re.findall(p, text, re.IGNORECASE)) for p in precise_patterns) / 5, 1.0)
 
     supplier_patterns = [r"ТОО\s+[\w\s]+", r"БИН\s+\d{12}", r"ИП\s+[\w\s]+"]
@@ -83,4 +84,5 @@ def predict_single(text):
     result['legal_summary'] = get_legal_summary(result['legal'])
     result['requirements'] = extract_requirements(text)
     result['requirement_labels'] = REQUIREMENT_LABELS
+    result['winners'] = check_winner_history(text)
     return result
