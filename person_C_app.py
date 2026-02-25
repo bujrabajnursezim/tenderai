@@ -38,6 +38,34 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; background-color:
 .metric-val { font-size: 1.6rem; font-weight: 700; color: #6C63FF; }
 .metric-lbl { font-size: 0.75rem; color: #999; margin-top: 4px; }
 .stProgress > div > div { background: linear-gradient(90deg, #6C63FF, #a78bfa) !important; border-radius: 50px !important; }
+.req-title {
+  background: linear-gradient(90deg, #6C63FF, #00D4FF);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0.35rem 0 0.55rem 0;
+}
+.req-card {
+  background: #111827;
+  border-left: 4px solid #6C63FF;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 4px 0;
+  display: flex;
+  gap: 10px;
+}
+.req-label { color:#B8C1EC; font-size:12px; }
+.req-value { color:#FFFFFF; font-weight:700; }
+.req-empty {
+  background:#FFF6E5;
+  border:1px solid #F4C97A;
+  color:#6B4E16;
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:0.9rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -119,9 +147,9 @@ with tab1:
 
             reqs = result.get("requirements", {})
             labels = result.get("requirement_labels", {})
+            st.markdown("---")
+            st.markdown("<div class='req-title'>📋 Что нужно для участия</div>", unsafe_allow_html=True)
             if reqs:
-                st.markdown("---")
-                st.subheader("📋 Что нужно для участия")
                 for key, value in reqs.items():
                     if value in (None, "", [], {}):
                         continue
@@ -131,15 +159,20 @@ with tab1:
                         value = ", ".join([str(v) for v in value])
                     icon, label = labels.get(key, ("•", key))
                     st.markdown(f"""
-        <div style='background:#1A1D2E; border-left:4px solid #6C63FF;
-        padding:10px; border-radius:5px; margin:4px 0; display:flex; gap:10px'>
+        <div class='req-card'>
         <span style='font-size:20px'>{icon}</span>
         <div>
-        <span style='color:#A0A8C0; font-size:12px'>{label}</span><br>
-        <span style='color:#FFFFFF; font-weight:bold'>{value}</span>
+        <span class='req-label'>{label}</span><br>
+        <span class='req-value'>{value}</span>
         </div>
         </div>
         """, unsafe_allow_html=True)
+            else:
+                st.markdown(
+                    "<div class='req-empty'>Требования не извлечены из этого файла. "
+                    "Проверьте, что в документе есть явные характеристики, сроки и условия.</div>",
+                    unsafe_allow_html=True,
+                )
 
             st.markdown("---")
             st.subheader("⚖️ Правовой анализ")
