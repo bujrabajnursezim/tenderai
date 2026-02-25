@@ -18,26 +18,51 @@ st.set_page_config(page_title="TenderAI", page_icon="🔍", layout="wide")
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-html, body, [class*="css"] { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1a1a2e; }
-.stApp { background-color: #ffffff; }
+:root {
+  --bg-main: #0F1117;
+  --bg-panel: #1A1D2E;
+  --bg-panel-soft: #131729;
+  --text-main: #F3F5FF;
+  --text-soft: #B8C1EC;
+  --border-main: #2A3152;
+  --accent: #6C63FF;
+}
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; color: var(--text-main); }
+.stApp { background: radial-gradient(1200px 500px at 20% -10%, #1F2440 0%, var(--bg-main) 45%); color: var(--text-main); }
 .block-container { padding-top: 2rem !important; max-width: 1100px !important; }
-.card { background: #f8f8ff; border: 1px solid #e0e0f0; border-radius: 16px; padding: 1.5rem; margin: 0.8rem 0; }
-.badge-high { background:#fff0f0; border:1px solid #ff4444; color:#ff4444; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:600; display:inline-block; }
-.badge-medium { background:#fff8e8; border:1px solid #ffaa00; color:#cc8800; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:600; display:inline-block; }
-.badge-low { background:#f0fff5; border:1px solid #00cc66; color:#009944; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:600; display:inline-block; }
-.exp-high { background:#fff5f5; border-left:3px solid #ff4444; padding:0.8rem 1rem; border-radius:0 10px 10px 0; margin:0.4rem 0; font-size:0.88rem; color:#333; }
-.exp-medium { background:#fffbf0; border-left:3px solid #ffaa00; padding:0.8rem 1rem; border-radius:0 10px 10px 0; margin:0.4rem 0; font-size:0.88rem; color:#333; }
-.exp-low { background:#f5fff8; border-left:3px solid #00cc66; padding:0.8rem 1rem; border-radius:0 10px 10px 0; margin:0.4rem 0; font-size:0.88rem; color:#333; }
-.sec { font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:3px; margin-bottom:0.6rem; margin-top:1.2rem; }
-.hist-high { background:#fff5f5; border:1px solid #ffd0d0; border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0; }
-.hist-medium { background:#fffbf0; border:1px solid #ffe0a0; border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0; }
-.hist-low { background:#f5fff8; border:1px solid #b0f0c8; border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0; }
-.highlight-red { background:#ffe0e0; color:#cc2222; padding:1px 4px; border-radius:4px; }
-.highlight-orange { background:#fff0cc; color:#cc7700; padding:1px 4px; border-radius:4px; }
-.metric-box { background: #f8f8ff; border: 1px solid #e0e0f0; border-radius: 12px; padding: 1rem; text-align: center; }
-.metric-val { font-size: 1.6rem; font-weight: 700; color: #6C63FF; }
-.metric-lbl { font-size: 0.75rem; color: #999; margin-top: 4px; }
+.card { background: var(--bg-panel); border: 1px solid var(--border-main); border-radius: 16px; padding: 1.5rem; margin: 0.8rem 0; color: var(--text-main); }
+.badge-high { background:#391A1F; border:1px solid #FF4B4B; color:#FF8080; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:600; display:inline-block; }
+.badge-medium { background:#3D2F16; border:1px solid #FFB020; color:#FFD084; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:600; display:inline-block; }
+.badge-low { background:#133026; border:1px solid #16C47F; color:#79E7B8; padding:6px 18px; border-radius:50px; font-size:0.85rem; font-weight:600; display:inline-block; }
+.exp-high { background:#2A171C; border-left:3px solid #FF4B4B; padding:0.8rem 1rem; border-radius:0 10px 10px 0; margin:0.4rem 0; font-size:0.88rem; color:var(--text-main); }
+.exp-medium { background:#2E2413; border-left:3px solid #FFB020; padding:0.8rem 1rem; border-radius:0 10px 10px 0; margin:0.4rem 0; font-size:0.88rem; color:var(--text-main); }
+.exp-low { background:#133025; border-left:3px solid #16C47F; padding:0.8rem 1rem; border-radius:0 10px 10px 0; margin:0.4rem 0; font-size:0.88rem; color:var(--text-main); }
+.sec { font-size:0.7rem; color:var(--text-soft); text-transform:uppercase; letter-spacing:3px; margin-bottom:0.6rem; margin-top:1.2rem; }
+.hist-high { background:#2A171C; border:1px solid #5D2A34; border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0; }
+.hist-medium { background:#2E2413; border:1px solid #6A5225; border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0; }
+.hist-low { background:#133025; border:1px solid #1E694C; border-radius:10px; padding:0.6rem 1rem; margin:0.3rem 0; }
+.highlight-red { background:#5A212A; color:#FFC8D0; padding:1px 4px; border-radius:4px; }
+.highlight-orange { background:#5E431A; color:#FFE5B0; padding:1px 4px; border-radius:4px; }
+.metric-box { background: var(--bg-panel); border: 1px solid var(--border-main); border-radius: 12px; padding: 1rem; text-align: center; }
+.metric-val { font-size: 1.6rem; font-weight: 700; color: #8D86FF; }
+.metric-lbl { font-size: 0.75rem; color: var(--text-soft); margin-top: 4px; }
 .stProgress > div > div { background: linear-gradient(90deg, #6C63FF, #a78bfa) !important; border-radius: 50px !important; }
+.stTabs [data-baseweb="tab-list"] {
+  background: var(--bg-panel-soft);
+  border: 1px solid var(--border-main);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+.stTabs [data-baseweb="tab"] {
+  color: var(--text-soft);
+  border-radius: 8px;
+  font-weight: 600;
+}
+.stTabs [aria-selected="true"] {
+  background: linear-gradient(90deg, #6C63FF, #5D8BFF) !important;
+  color: #ffffff !important;
+}
 .req-title {
   background: linear-gradient(90deg, #6C63FF, #00D4FF);
   color: #ffffff;
@@ -59,9 +84,9 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; background-color:
 .req-label { color:#B8C1EC; font-size:12px; }
 .req-value { color:#FFFFFF; font-weight:700; }
 .req-empty {
-  background:#FFF6E5;
-  border:1px solid #F4C97A;
-  color:#6B4E16;
+  background:#2E2413;
+  border:1px solid #7A5D25;
+  color:#FFE5B0;
   border-radius:8px;
   padding:10px 12px;
   font-size:0.9rem;
@@ -217,8 +242,8 @@ with tab1:
                 st.markdown('<div style="text-align:center"><span class="badge-medium">СРЕДНИЙ РИСК</span></div>', unsafe_allow_html=True)
             else:
                 st.markdown('<div style="text-align:center"><span class="badge-low">НИЗКИЙ РИСК</span></div>', unsafe_allow_html=True)
-            st.markdown(f'<p style="text-align:center;color:#555;margin-top:8px;">{result.get("verdict","")}</p>', unsafe_allow_html=True)
-            st.markdown(f'<p style="text-align:center;color:#999;font-size:0.85rem;">{result.get("recommendation","")}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="text-align:center;color:#E6EAFF;margin-top:8px;">{result.get("verdict","")}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="text-align:center;color:#B8C1EC;font-size:0.85rem;">{result.get("recommendation","")}</p>', unsafe_allow_html=True)
             if result.get("explanations"):
                 st.markdown('<div class="sec">AI ОБЪЯСНЕНИЕ</div>', unsafe_allow_html=True)
                 for exp in result["explanations"]:
@@ -236,12 +261,12 @@ with tab1:
             if result.get("components"):
                 st.markdown('<div class="sec">КОМПОНЕНТЫ РИСКА</div>', unsafe_allow_html=True)
                 for name, val in result["components"].items():
-                    st.markdown(f'<div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#888;margin-bottom:3px;"><span>{name}</span><span>{val}%</span></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#B8C1EC;margin-bottom:3px;"><span>{name}</span><span>{val}%</span></div>', unsafe_allow_html=True)
                     st.progress(val / 100)
             if result.get("suspicious_sentences"):
                 st.markdown('<div class="sec">ТЕПЛОВАЯ КАРТА ТЕКСТА</div>', unsafe_allow_html=True)
                 highlighted = highlight_text(text, result.get("suspicious_sentences", []))
-                st.markdown(f'<div class="card" style="font-size:0.82rem;line-height:1.7;color:#333;max-height:300px;overflow-y:auto;">{highlighted}...</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="card" style="font-size:0.82rem;line-height:1.7;color:#E6EAFF;max-height:300px;overflow-y:auto;">{highlighted}...</div>', unsafe_allow_html=True)
             if result.get("stats"):
                 st.markdown('<div class="sec">СТАТИСТИКА</div>', unsafe_allow_html=True)
                 stats = result["stats"]
@@ -293,13 +318,13 @@ with tab2:
         st.markdown("---")
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown(f'<p style="text-align:center;font-weight:600;color:#6C63FF;">{file1.name}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="text-align:center;font-weight:600;color:#A9B3FF;">{file1.name}</p>', unsafe_allow_html=True)
             show_gauge(r1["risk_score"], height=240)
             s = r1["risk_score"]
             css = "badge-high" if s >= 70 else "badge-medium" if s >= 40 else "badge-low"
             st.markdown(f'<div style="text-align:center"><span class="{css}">{s}/100</span></div>', unsafe_allow_html=True)
         with c2:
-            st.markdown(f'<p style="text-align:center;font-weight:600;color:#6C63FF;">{file2.name}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="text-align:center;font-weight:600;color:#A9B3FF;">{file2.name}</p>', unsafe_allow_html=True)
             show_gauge(r2["risk_score"], height=240)
             s = r2["risk_score"]
             css = "badge-high" if s >= 70 else "badge-medium" if s >= 40 else "badge-low"
@@ -321,17 +346,17 @@ with tab2:
                 ca, cb = st.columns(2)
                 with ca:
                     color = "#ff4444" if v1 > v2 else "#6C63FF"
-                    st.markdown(f'<div style="font-size:0.78rem;color:#888;">{name}: <b style="color:{color}">{v1}%</b></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="font-size:0.78rem;color:#B8C1EC;">{name}: <b style="color:{color}">{v1}%</b></div>', unsafe_allow_html=True)
                     st.progress(v1 / 100)
                 with cb:
                     color = "#ff4444" if v2 > v1 else "#6C63FF"
-                    st.markdown(f'<div style="font-size:0.78rem;color:#888;">{name}: <b style="color:{color}">{v2}%</b></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="font-size:0.78rem;color:#B8C1EC;">{name}: <b style="color:{color}">{v2}%</b></div>', unsafe_allow_html=True)
                     st.progress(v2 / 100)
 
 with tab3:
     st.markdown('<div class="sec">ПОСЛЕДНИЕ 5 АНАЛИЗОВ</div>', unsafe_allow_html=True)
     if not st.session_state.history:
-        st.markdown('<p style="color:#aaa;text-align:center;margin-top:2rem;">История пуста — загрузите тендер для анализа</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color:#B8C1EC;text-align:center;margin-top:2rem;">История пуста — загрузите тендер для анализа</p>', unsafe_allow_html=True)
     else:
         for item in st.session_state.history:
             s = item["score"]
@@ -341,12 +366,12 @@ with tab3:
             <div class="{css}">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                     <div>
-                        <span style="font-weight:600;font-size:0.9rem;">{item['name']}</span>
-                        <div style="color:#888;font-size:0.78rem;margin-top:2px;">{item['preview']}</div>
+                        <span style="font-weight:600;font-size:0.9rem;color:#E6EAFF;">{item['name']}</span>
+                        <div style="color:#B8C1EC;font-size:0.78rem;margin-top:2px;">{item['preview']}</div>
                     </div>
                     <div style="text-align:right;min-width:100px;">
                         <div style="font-size:1.4rem;font-weight:700;color:{score_color}">{s}</div>
-                        <div style="color:#bbb;font-size:0.75rem;">{item['time']}</div>
+                        <div style="color:#A9B3D9;font-size:0.75rem;">{item['time']}</div>
                     </div>
                 </div>
             </div>
@@ -356,4 +381,4 @@ with tab3:
             st.session_state.history = []
             st.rerun()
 
-st.markdown('<p style="text-align:center;color:#ddd;font-size:0.7rem;margin-top:3rem;">TENDERAI // HACKATHON 2026 // KAZAKHSTAN</p>', unsafe_allow_html=True)
+st.markdown('<p style="text-align:center;color:#A9B3D9;font-size:0.7rem;margin-top:3rem;">TENDERAI // HACKATHON 2026 // KAZAKHSTAN</p>', unsafe_allow_html=True)
