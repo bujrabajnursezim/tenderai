@@ -2,7 +2,7 @@
 import pickle, re, numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MinMaxScaler
-
+from legal_compliance import check_legal_compliance, get_legal_summary
 embedder = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 with open("model.pkl", "rb") as f: model = pickle.load(f)
 with open("scaler.pkl", "rb") as f: scaler = pickle.load(f)
@@ -45,8 +45,11 @@ def predict_single(text):
 
     sentences = re.split(r"[.!?\n]", text)
     suspicious = [s.strip() for s in sentences if len(s.strip()) > 20 and (re.search(r"\d+[.,]\d+", s) or re.search(r"строго|исключительно|только", s, re.IGNORECASE) or re.search(r"[A-Z]{2,}\d+", s))][:5]
-
+    legal = check_legal_compliance(text)
+    legal_summary = get_legal_summary(legal)
     return {"risk_score": risk, "level": level, "color": color, "recommendation": rec,
              "components": {"Аномальность текста": round(anomaly*100,1), "Бренды и модели": round(feats["brand_model"]*100,1), "Слова-ограничители": round(feats["restriction"]*100,1), "Жёсткие сроки": round(feats["tight_deadline"]*100,1), "Точные параметры": round(feats["precise_params"]*100,1)},
              "suspicious_sentences": suspicious,
-             "stats": {"total_chars": len(text), "precise_numbers": len(re.findall(r"\d+[.,]\d+", text)), "sentences": len(sentences)}}
+             "stats": {"total_chars": len(text), "precise_numbers": len(re.findall(r"\d+[.,]\d+", text)), "sentences": len(sentences)},
+             "legal": legal,
+             "legal_summary": legal_summary}
