@@ -106,26 +106,32 @@ def extract_text(file):
         return " ".join([p.text for p in doc.paragraphs])
     return ""
 
-def show_gauge(score, height=280):
+def show_gauge(score, height=360):
     color = "#ff4444" if score >= 70 else "#ffaa00" if score >= 40 else "#00cc66"
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=score,
         number={"font": {"size": 44, "color": color}, "suffix": "/100"},
         gauge={
-            "axis": {"range": [0, 100], "tickcolor": "#ccc", "tickfont": {"color": "#999", "size": 11}},
+            "axis": {"range": [0, 100], "tickcolor": "#7A84B6", "tickfont": {"color": "#B8C1EC", "size": 11}},
             "bar": {"color": color, "thickness": 0.06},
-            "bgcolor": "#f8f8ff",
-            "bordercolor": "#e0e0f0",
+            "bgcolor": "#1A1D2E",
+            "bordercolor": "#2A3152",
             "steps": [
-                {"range": [0, 40], "color": "#e8fff0"},
-                {"range": [40, 70], "color": "#fff8e0"},
-                {"range": [70, 100], "color": "#fff0f0"},
+                {"range": [0, 40], "color": "#143529"},
+                {"range": [40, 70], "color": "#3D2F16"},
+                {"range": [70, 100], "color": "#3A1B22"},
             ],
             "threshold": {"line": {"color": color, "width": 5}, "thickness": 0.8, "value": score}
         }
     ))
-    fig.update_layout(height=height, margin={"t": 10, "b": 0, "l": 20, "r": 20}, paper_bgcolor="#ffffff", font={"color": "#1a1a2e"})
+    fig.update_layout(
+        height=height,
+        margin={"t": 20, "b": 40, "l": 20, "r": 20},
+        paper_bgcolor="#0F1117",
+        plot_bgcolor="#0F1117",
+        font={"color": "#E6EAFF"},
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 def highlight_text(text, suspicious_sentences):
