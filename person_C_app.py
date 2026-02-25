@@ -116,6 +116,25 @@ with tab1:
             st.session_state.history = st.session_state.history[:5]
             st.markdown("---")
             show_gauge(score)
+
+            reqs = result.get("requirements", {})
+            labels = result.get("requirement_labels", {})
+            if reqs:
+                st.markdown("---")
+                st.subheader("📋 Что нужно для участия")
+                for key, value in reqs.items():
+                    icon, label = labels.get(key, ("•", key))
+                    st.markdown(f"""
+        <div style='background:#1A1D2E; border-left:4px solid #6C63FF;
+        padding:10px; border-radius:5px; margin:4px 0; display:flex; gap:10px'>
+        <span style='font-size:20px'>{icon}</span>
+        <div>
+        <span style='color:#A0A8C0; font-size:12px'>{label}</span><br>
+        <span style='color:#FFFFFF; font-weight:bold'>{value}</span>
+        </div>
+        </div>
+        """, unsafe_allow_html=True)
+
             st.markdown("---")
             st.subheader("⚖️ Правовой анализ")
 
