@@ -2,6 +2,7 @@
 import pickle, re, numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import MinMaxScaler
+from extract_requirements import extract_requirements, REQUIREMENT_LABELS
 from legal_compliance import check_legal_compliance, get_legal_summary
 embedder = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 with open("model.pkl", "rb") as f: model = pickle.load(f)
@@ -36,20 +37,50 @@ def predict_single(text):
     raw = model.decision_function(vec)[0]
     anomaly = float(scaler.transform([[-raw]])[0][0])
     feats = extract_features(text)
-    
-    risk = round((0.20*anomaly + 0.25*feats["brand_model"] + 0.25*feats["restriction"] + 0.10*feats["tight_deadline"] + 0.10*feats["precise_params"] + 0.10*feats["supplier_lock"]) * 100, 1)
-    
+
+    # Увеличили веса бренды + ограничители
+    risk = round((
+        0.10 * anomaly +
+        0.35 * feats["brand_model"] +
+        0.30 * feats["restriction"] +
+        0.10 * feats["tight_deadline"] +
+        0.05 * feats["precise_params"] +
+        0.10 * feats["supplier_lock"]
+    ) * 100, 1)
+
     if risk >= 70: level, color, rec = "🔴 ВЫСОКИЙ", "red", "Требуется детальная проверка. Возможны признаки ограничения конкуренции."
     elif risk >= 40: level, color, rec = "🟡 СРЕДНИЙ", "orange", "Отдельные признаки специфичности. Рекомендуется дополнительная экспертиза."
     else: level, color, rec = "🟢 НИЗКИЙ", "green", "Документ соответствует стандартным требованиям."
 
     sentences = re.split(r"[.!?\n]", text)
-    suspicious = [s.strip() for s in sentences if len(s.strip()) > 20 and (re.search(r"\d+[.,]\d+", s) or re.search(r"строго|исключительно|только", s, re.IGNORECASE) or re.search(r"[A-Z]{2,}\d+", s))][:5]
-    legal = check_legal_compliance(text)
-    legal_summary = get_legal_summary(legal)
-    return {"risk_score": risk, "level": level, "color": color, "recommendation": rec,
-             "components": {"Аномальность текста": round(anomaly*100,1), "Бренды и модели": round(feats["brand_model"]*100,1), "Слова-ограничители": round(feats["restriction"]*100,1), "Жёсткие сроки": round(feats["tight_deadline"]*100,1), "Точные параметры": round(feats["precise_params"]*100,1)},
-             "suspicious_sentences": suspicious,
-             "stats": {"total_chars": len(text), "precise_numbers": len(re.findall(r"\d+[.,]\d+", text)), "sentences": len(sentences)},
-             "legal": legal,
-             "legal_summary": legal_summary}
+    suspicious = [s.strip() for s in sentences if len(s.strip()) > 20 and (
+        re.search(r"\d+[.,]\d+", s) or
+        re.search(r"строго|исключительно|только", s, re.IGNORECASE) or
+        re.search(r"[A-Z]{2,}\d+", s)
+    )][:5]
+
+    result = {
+        "risk_score": risk,
+        "level": level,
+        "color": color,
+        "recommendation": rec,
+        "components": {
+            "Аномальность текста": round(anomaly*100,1),
+            "Бренды и модели": round(feats["brand_model"]*100,1),
+            "Слова-ограничители": round(feats["restriction"]*100,1),
+            "Жёсткие сроки": round(feats["tight_deadline"]*100,1),
+            "Точные параметры": round(feats["precise_params"]*100,1)
+        },
+        "suspicious_sentences": suspicious,
+        "stats": {
+            "total_chars": len(text),
+            "precise_numbers": len(re.findall(r"\d+[.,]\d+", text)),
+            "sentences": len(sentences)
+        }
+    }
+
+    result['legal'] = check_legal_compliance(text)
+    result['legal_summary'] = get_legal_summary(result['legal'])
+    result['requirements'] = extract_requirements(text)
+    result['requirement_labels'] = REQUIREMENT_LABELS
+    return result
