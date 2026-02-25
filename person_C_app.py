@@ -118,30 +118,28 @@ with tab1:
             show_gauge(score)
 
             reqs = result.get("requirements", {})
-labels = result.get("requirement_labels", {})
-tech_labels = result.get("tech_spec_labels", {})
-
-if reqs:
-    st.markdown("---")
-    st.subheader("📋 Что нужно для участия")
-    for key, value in reqs.items():
-        if key == "tech_specs":
-            st.markdown(f"""
-            <div style='background:#1A1D2E; border-left:4px solid #6C63FF;
-            padding:10px; border-radius:5px; margin:4px 0'>
-            <span style='color:#A0A8C0; font-size:12px'>⚙️ Технические характеристики</span><br>
-            {"".join(f"<span style='color:#FFFFFF; font-size:13px'>{'💾 RAM' if k=='RAM' else k}: <b>{v}</b></span><br>" for k,v in value.items())}
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            icon, label = labels.get(key, ("•", key))
-            st.markdown(f"""
-            <div style='background:#1A1D2E; border-left:4px solid #6C63FF;
-            padding:10px; border-radius:5px; margin:4px 0'>
-            <span style='color:#A0A8C0; font-size:12px'>{icon} {label}</span><br>
-            <span style='color:#FFFFFF; font-weight:bold'>{value}</span>
-            </div>
-            """, unsafe_allow_html=True)
+            labels = result.get("requirement_labels", {})
+            if reqs:
+                st.markdown("---")
+                st.subheader("📋 Что нужно для участия")
+                for key, value in reqs.items():
+                    if value in (None, "", [], {}):
+                        continue
+                    if isinstance(value, dict):
+                        value = " | ".join([f"{k}: {v}" for k, v in value.items()])
+                    elif isinstance(value, (list, tuple, set)):
+                        value = ", ".join([str(v) for v in value])
+                    icon, label = labels.get(key, ("•", key))
+                    st.markdown(f"""
+        <div style='background:#1A1D2E; border-left:4px solid #6C63FF;
+        padding:10px; border-radius:5px; margin:4px 0; display:flex; gap:10px'>
+        <span style='font-size:20px'>{icon}</span>
+        <div>
+        <span style='color:#A0A8C0; font-size:12px'>{label}</span><br>
+        <span style='color:#FFFFFF; font-weight:bold'>{value}</span>
+        </div>
+        </div>
+        """, unsafe_allow_html=True)
 
             st.markdown("---")
             st.subheader("⚖️ Правовой анализ")
