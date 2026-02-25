@@ -31,6 +31,10 @@ def _first_group(text, patterns, group=1, flags=re.IGNORECASE):
     for pattern in patterns:
         m = re.search(pattern, text, flags)
         if m:
+            # Some patterns intentionally have no capturing groups.
+            # Fall back to group(0) to avoid IndexError on mixed pattern sets.
+            if m.lastindex is None or group > m.lastindex:
+                return _clean(m.group(0))
             return _clean(m.group(group))
     return None
 
